@@ -6,25 +6,25 @@
       "value": "southcentralus"
     },
     "aiServices": {
-      "value": "aiservices"
+      "value": "stjudeai"
     },
     "firstProjectName": {
       "value": "project"
     },
     "modelName": {
-      "value": "gpt-4o"
+      "value": "gpt-5"
     },
     "modelFormat": {
       "value": "OpenAI"
     },
     "modelVersion": {
-      "value": "2024-11-20"
+      "value": "2025-08-07"
     },
     "modelSkuName": {
       "value": "GlobalStandard"
     },
     "modelCapacity": {
-      "value": 1
+      "value": 500
     },
     "aiSearchResourceId": {
       "value": ""
