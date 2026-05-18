@@ -6,7 +6,10 @@ from typing import Annotated
 
 from agent_framework.foundry import FoundryChatClient
 from azure.identity.aio import DefaultAzureCredential
+from dotenv import load_dotenv
 from pydantic import Field
+
+load_dotenv()
 
 PROJECT_ENDPOINT = os.environ["AZURE_AI_PROJECT_ENDPOINT"]
 MODEL_DEPLOYMENT = os.environ["AZURE_AI_MODEL_DEPLOYMENT_NAME"]
