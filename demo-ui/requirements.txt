@@ -1,0 +1,7 @@
+streamlit>=1.39
+agent-framework
+azure-ai-agents
+azure-identity
+mcp
+python-dotenv
+pydantic
