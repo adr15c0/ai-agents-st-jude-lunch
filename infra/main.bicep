@@ -27,7 +27,7 @@
   'southcentralus'
 ])
 @description('The Azure region where your AI Foundry resource and project will be created.')
-param location string = 'southcentralus'
+param location string = 'westus3'
 
 @maxLength(9)
 @description('The name of the Azure AI Foundry resource.')

@@ -21,7 +21,7 @@ For more details on the standard agent setup, see the [standard agent setup conc
 | Subscription     | `MCAPS-Hybrid-REQ-54957-2023-alrui`    |
 | Tenant ID        | `16b3c013-d300-468d-ac64-7eda0820b6d3` |
 | Resource Group   | `ai-agents-st-jude-lunch-rg`           |
-| Location         | `southcentralus`                       |
+| Location         | `westus3`                              |
 
 1. Set the active subscription:
 
@@ -32,7 +32,7 @@ For more details on the standard agent setup, see the [standard agent setup conc
 2. Create the resource group:
 
 ```bash
-    az group create --name ai-agents-st-jude-lunch-rg --location southcentralus
+    az group create --name ai-agents-st-jude-lunch-rg --location westus3
 ```
 
 3. Deploy the template:
