@@ -1,13 +1,10 @@
-"""Agent factory — builds the literature-triage agent from Demo 1.
-
-Kept in its own module so the FastAPI app and any tests can import it.
-"""
+"""Agent factory \u2014 builds the literature-triage agent from Demo 1."""
 from __future__ import annotations
 
 import os
 from typing import Annotated
 
-from agent_framework.azure import AzureAIAgentClient
+from agent_framework.foundry import FoundryChatClient
 from azure.identity.aio import DefaultAzureCredential
 from pydantic import Field
 
@@ -37,23 +34,23 @@ def gene_lookup(symbol: Annotated[str, Field(description="HGNC gene symbol.")]) 
     return catalog.get(symbol.upper(), {"error": f"No record for {symbol}."})
 
 
-def build_agent_client() -> tuple[AzureAIAgentClient, DefaultAzureCredential]:
-    """Return a connected AzureAIAgentClient and the credential to close on shutdown.
+def build_agent_client() -> tuple[FoundryChatClient, DefaultAzureCredential]:
+    """Return a connected FoundryChatClient and the credential to close on shutdown.
 
     Uses DefaultAzureCredential so the same code runs locally (via `az login`)
     and in the Container App (via its system-assigned managed identity).
     """
     credential = DefaultAzureCredential()
-    client = AzureAIAgentClient(
+    client = FoundryChatClient(
         project_endpoint=PROJECT_ENDPOINT,
-        model_deployment_name=MODEL_DEPLOYMENT,
-        async_credential=credential,
+        model=MODEL_DEPLOYMENT,
+        credential=credential,
     )
     return client, credential
 
 
-def create_agent(client: AzureAIAgentClient):
-    return client.create_agent(
+def create_agent(client: FoundryChatClient):
+    return client.as_agent(
         name="LiteratureTriageAgent",
         instructions=(
             "You are a research assistant helping pediatric oncology investigators "
