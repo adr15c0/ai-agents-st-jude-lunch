@@ -22,6 +22,20 @@ For more details on the standard agent setup, see the [standard agent setup conc
 | Tenant ID        | `16b3c013-d300-468d-ac64-7eda0820b6d3` |
 | Resource Group   | `ai-agents-st-jude-lunch-rg`           |
 | Location         | `westus3`                              |
+| Foundry account  | `stjudeaidcci`                         |
+| Foundry project  | `projectdcci`                          |
+| Project endpoint | `https://stjudeaidcci.services.ai.azure.com/api/projects/projectdcci` |
+| Model deployment | `gpt-5` (v2025-08-07, GlobalStandard, 500K TPM) |
+
+> **Note about the parameter file:** `azuredeploy.parameters.json` references
+> the **existing** Cosmos DB, AI Search, and Storage resources by ARM ID.
+> This is a workaround for a transient ARM read-back failure on AI Search
+> in the dependency module: the resources create successfully but ARM
+> reports `ResourceNotFound` when emitting outputs. The workaround is to
+> pre-create the three dependencies (or reuse them from a previous failed
+> deploy) and pass them in as BYO via the `aiSearchResourceId`,
+> `azureStorageAccountResourceId`, and `azureCosmosDBAccountResourceId`
+> parameters.
 
 1. Set the active subscription:
 

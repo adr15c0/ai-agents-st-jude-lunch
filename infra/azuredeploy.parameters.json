@@ -27,13 +27,13 @@
       "value": 500
     },
     "aiSearchResourceId": {
-      "value": ""
+      "value": "/subscriptions/b14476f5-89c5-4531-875e-afbdaa3a5ca1/resourceGroups/ai-agents-st-jude-lunch-rg/providers/Microsoft.Search/searchServices/jbe7search"
     },
     "azureStorageAccountResourceId": {
-      "value": ""
+      "value": "/subscriptions/b14476f5-89c5-4531-875e-afbdaa3a5ca1/resourceGroups/ai-agents-st-jude-lunch-rg/providers/Microsoft.Storage/storageAccounts/jbe7storage"
     },
     "azureCosmosDBAccountResourceId": {
-      "value": ""
+      "value": "/subscriptions/b14476f5-89c5-4531-875e-afbdaa3a5ca1/resourceGroups/ai-agents-st-jude-lunch-rg/providers/Microsoft.DocumentDB/databaseAccounts/jbe7cosmosdb"
     }
   }
 }
