@@ -1,0 +1,4 @@
+agent-framework
+azure-identity
+azure-ai-projects
+python-dotenv

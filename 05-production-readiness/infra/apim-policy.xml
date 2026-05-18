@@ -1,0 +1,73 @@
+<!--
+APIM policy for the Literature Triage Agent — AI Gateway pattern.
+
+Apply at the API or Operation scope. Replace the {{...}} placeholders with
+APIM named values managed by the platform team.
+
+Highlights:
+  - Subscription key required (caller identity).
+  - JWT validation via Entra ID for downstream consumer apps.
+  - Per-subscription RPS rate limit.
+  - Per-subscription daily token budget (custom counter).
+  - Strip the inbound auth header before forwarding to Container Apps so the
+    container only ever sees its own managed-identity token (set in <backend>).
+-->
+<policies>
+  <inbound>
+    <base />
+    <!-- 1. Caller identity -->
+    <check-header name="Ocp-Apim-Subscription-Key" failed-check-httpcode="401" failed-check-error-message="Missing subscription key." ignore-case="false" />
+
+    <!-- 2. Optional: validate Entra ID JWT for the calling user/service -->
+    <validate-jwt header-name="Authorization" failed-validation-httpcode="401" failed-validation-error-message="Invalid token.">
+      <openid-config url="https://login.microsoftonline.com/{{tenant-id}}/v2.0/.well-known/openid-configuration" />
+      <required-claims>
+        <claim name="aud">
+          <value>{{apim-api-audience}}</value>
+        </claim>
+      </required-claims>
+    </validate-jwt>
+
+    <!-- 3. Rate limit: 60 requests per minute per subscription key -->
+    <rate-limit-by-key calls="60" renewal-period="60" counter-key="@(context.Subscription?.Id ?? "anonymous")" />
+
+    <!-- 4. Daily token budget per subscription (custom counter; populated in <outbound>) -->
+    <quota-by-key calls="1000000" renewal-period="86400" counter-key="@("tokens-" + (context.Subscription?.Id ?? "anonymous"))" first-period-start="2026-01-01T00:00:00Z" />
+
+    <!-- 5. Forward the request to the internal Container App.
+         The container itself authenticates outbound to Foundry using its
+         managed identity, so we deliberately do NOT pass the caller's token
+         through. -->
+    <set-backend-service base-url="https://{{aca-internal-fqdn}}" />
+    <set-header name="Authorization" exists-action="delete" />
+  </inbound>
+
+  <backend>
+    <base />
+  </backend>
+
+  <outbound>
+    <base />
+    <!-- 6. Strip internal headers from responses. -->
+    <set-header name="x-internal-trace-id" exists-action="delete" />
+
+    <!-- 7. Record tokens-used against the daily quota counter.
+         The agent surface should return `usage.total_tokens` in its JSON
+         body for this to work. -->
+    <choose>
+      <when condition="@(context.Response.StatusCode == 200)">
+        <set-variable name="tokens" value="@{
+          try {
+            var body = context.Response.Body.As<JObject>(preserveContent: true);
+            return (int?)body["usage"]?["total_tokens"] ?? 0;
+          } catch { return 0; }
+        }" />
+        <increment-counter counter-key="@("tokens-" + (context.Subscription?.Id ?? "anonymous"))" value="@((int)context.Variables["tokens"])" />
+      </when>
+    </choose>
+  </outbound>
+
+  <on-error>
+    <base />
+  </on-error>
+</policies>
